@@ -2,6 +2,8 @@
 
 A minimal example showing how HTML5's canvas, wasm memory and zig can interact.
 
+https://daneelsan.github.io/minimal-zig-wasm-canvas/
+
 ![checkerboard](./checkerboard.gif)
 
 This example was mostly adapted from: https://wasmbyexample.dev/examples/reading-and-writing-graphics/reading-and-writing-graphics.rust.en-us.html. The difference (aside from using Zig instead of Rust), is that this example
