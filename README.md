@@ -17,7 +17,7 @@ There are two functions exported: `getCheckerboardBufferPointer()` and `colorChe
 
 `checkerboard.zig` is compiled into the wasm module `checkerboard.wasm` by `build.zig` (see the [Build Section](#build)).
 
-`script.js` first creates a [WebAssembly.Memory](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Memory), named `memory`, which will be used by the wasm module's memory (see the `--import-memory` flag in the the [Build Section](#build)). Next step is to compile and instantiate the fetched wasm module using [WebAssembly.instantiateStreaming()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/instantiateStreaming). The returned object is a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) which contains the `instance` field ([WebAssembly.Instance](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Instance)). This is where all the exported symbols from `checkerboard.wasm` will be stored.
+`script.js` first creates a [WebAssembly.Memory](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Memory), named `memory`, which will be used by the wasm module's memory. Next step is to compile and instantiate the fetched wasm module using [WebAssembly.instantiateStreaming()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/instantiateStreaming). The returned object is a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) which contains the `instance` field ([WebAssembly.Instance](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Instance)). This is where all the exported symbols from `checkerboard.wasm` will be stored.
 
 What follows is mostly straightforward:
 
@@ -33,17 +33,23 @@ What follows is mostly straightforward:
 
 The default (and only) target for this example is `wasm32-freestanding-musl`.
 
+The latest zig version used to build this project is:
+```shell
+$ zig version
+0.12.0-dev.271+5cc1831ca
+```
+
 To build the wasm module, run:
 
 ```shell
-$ zig build checkerboard -Drelease=true
+$ zig build
 
-$ ls checkerboard.*
-checkerboard.o    checkerboard.wasm    checkerboard.zig
+$ ls zig-out/lib/ checkerboard.*
+checkerboard.wasm
 ```
 
 Note: `build.zig` specifies various wasm-ld parameters. For example, it sets the initial memory size
-and maximum size to be 2 pages, where each page consists of 64kB. Use the `--verbose` flag to see the complete list of flags the build uses.
+and maximum size to be 17 pages, where each page consists of 64kB. Use the `--verbose` flag to see the complete list of flags the build uses.
 
 ## Run
 
