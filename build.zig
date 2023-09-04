@@ -1,30 +1,40 @@
 const std = @import("std");
 
-const page_size = 65536; // in bytes
+const page_size = 1024 * 64;
 
-pub fn build(b: *std.build.Builder) void {
-    // Adds the option -Drelease=[bool] to create a release build, which we set to be ReleaseSmall by default.
-    b.setPreferredReleaseMode(.ReleaseSmall);
-    // Standard release options allow the person running `zig build` to select
-    // between Debug, ReleaseSafe, ReleaseFast, and ReleaseSmall.
-    const mode = b.standardReleaseOptions();
+// Although this function looks imperative, note that its job is to
+// declaratively construct a build graph that will be executed by an external
+// runner.
+pub fn build(b: *std.Build) void {
+    const lib = b.addSharedLibrary(.{
+        .name = "checkerboard",
 
-    const checkerboard_step = b.step("checkerboard", "Compiles checkerboard.zig");
-    const checkerboard_lib = b.addSharedLibrary("checkerboard", "./checkerboard.zig", .unversioned);
-    checkerboard_lib.setBuildMode(mode);
-    checkerboard_lib.setTarget(.{
-        .cpu_arch = .wasm32,
-        .os_tag = .freestanding,
-        .abi = .musl,
+        // In this case the main source file is merely a path, however, in more
+        // complicated build scripts, this could be a generated file.
+        .root_source_file = .{ .path = "src/checkerboard.zig" },
+
+        .target = .{
+            .cpu_arch = .wasm32,
+            .os_tag = .freestanding,
+            .abi = .musl,
+        },
+
+        .optimize = .ReleaseSmall,
     });
-    checkerboard_lib.setOutputDir(".");
 
-    // https://github.com/ziglang/zig/issues/8633
-    checkerboard_lib.import_memory = true; // import linear memory from the environment
-    checkerboard_lib.initial_memory = 2 * page_size; // initial size of the linear memory (1 page = 64kB)
-    checkerboard_lib.max_memory = 2 * page_size; // maximum size of the linear memory
-    checkerboard_lib.global_base = 6560; // offset in linear memory to place global data
+    // <https://github.com/ziglang/zig/issues/8633>
+    lib.global_base = 6560;
+    lib.rdynamic = true;
+    lib.import_memory = true;
 
-    checkerboard_lib.install();
-    checkerboard_step.dependOn(&checkerboard_lib.step);
+    // TODO: Find out why required memory is so high
+    // Attempting to build with `page_size * 2` fails with:
+    // `error: wasm-ld: initial memory too small, 1095136 bytes needed`
+    lib.initial_memory = page_size * 17;
+    lib.max_memory = page_size * 17;
+
+    // This declares intent for the library to be installed into the standard
+    // location when the user invokes the "install" step (the default step when
+    // running `zig build`).
+    b.installArtifact(lib);
 }

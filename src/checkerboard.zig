@@ -4,12 +4,18 @@ extern fn consoleLog(arg: u32) void;
 
 const checkerboard_size: usize = 8;
 
-// 8 x 8 pixels, where each pixel is 4 bytes (rgba)
-var checkerboard_buffer = std.mem.zeroes([checkerboard_size][checkerboard_size][4]u8);
+// checkerboard_size * 2, where each pixel is 4 bytes (rgba)
+var checkerboard_buffer = std.mem.zeroes(
+    [checkerboard_size][checkerboard_size][4]u8,
+);
 
 // The returned pointer will be used as an offset integer to the wasm memory
 export fn getCheckerboardBufferPointer() [*]u8 {
-    return @ptrCast([*]u8, &checkerboard_buffer);
+    return @ptrCast(&checkerboard_buffer);
+}
+
+export fn getCheckerboardSize() usize {
+    return checkerboard_size;
 }
 
 export fn colorCheckerboard(
@@ -20,8 +26,8 @@ export fn colorCheckerboard(
     light_value_green: u8,
     light_value_blue: u8,
 ) void {
-    for (checkerboard_buffer) |*row, y| {
-        for (row) |*square, x| {
+    for (&checkerboard_buffer, 0..) |*row, y| {
+        for (row, 0..) |*square, x| {
             var is_dark_square = true;
 
             if ((y % 2) == 0) {
