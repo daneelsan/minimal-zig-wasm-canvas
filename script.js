@@ -1,7 +1,7 @@
 var memory = new WebAssembly.Memory({
-	// See build.zig for reasoning
-    initial: 17 /* pages */,
-    maximum: 17 /* pages */,
+    // See build.zig for reasoning
+    initial: 2 /* pages */,
+    maximum: 2 /* pages */,
 });
 
 var importObject = {
@@ -15,11 +15,11 @@ WebAssembly.instantiateStreaming(fetch("zig-out/lib/checkerboard.wasm"), importO
     const wasmMemoryArray = new Uint8Array(memory.buffer);
 
 
-	// Automatically set canvas size as defined in `checkerboard.zig`
-	const checkerboardSize = result.instance.exports.getCheckerboardSize();
+    // Automatically set canvas size as defined in `checkerboard.zig`
+    const checkerboardSize = result.instance.exports.getCheckerboardSize();
     const canvas = document.getElementById("checkerboard");
-	canvas.width  = checkerboardSize;
-	canvas.height = checkerboardSize;
+    canvas.width = checkerboardSize;
+    canvas.height = checkerboardSize;
 
     const context = canvas.getContext("2d");
     const imageData = context.createImageData(canvas.width, canvas.height);

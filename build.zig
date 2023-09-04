@@ -1,6 +1,8 @@
 const std = @import("std");
 
-const page_size = 1024 * 64;
+// Number of pages reserved for heap memory.
+// This must match the number of pages used in script.js.
+const number_of_pages = 2;
 
 // Although this function looks imperative, note that its job is to
 // declaratively construct a build graph that will be executed by an external
@@ -26,12 +28,10 @@ pub fn build(b: *std.Build) void {
     lib.global_base = 6560;
     lib.rdynamic = true;
     lib.import_memory = true;
+    lib.stack_size = std.wasm.page_size;
 
-    // TODO: Find out why required memory is so high
-    // Attempting to build with `page_size * 2` fails with:
-    // `error: wasm-ld: initial memory too small, 1095136 bytes needed`
-    lib.initial_memory = page_size * 17;
-    lib.max_memory = page_size * 17;
+    lib.initial_memory = std.wasm.page_size * number_of_pages;
+    lib.max_memory = std.wasm.page_size * number_of_pages;
 
     // This declares intent for the library to be installed into the standard
     // location when the user invokes the "install" step (the default step when

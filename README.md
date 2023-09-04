@@ -46,10 +46,13 @@ $ zig build
 
 $ ls zig-out/lib/ checkerboard.*
 checkerboard.wasm
+
+$ wc -c zig-out/lib/checkerboard.wasm 
+580 zig-out/lib/checkerboard.wasm
 ```
 
 Note: `build.zig` specifies various wasm-ld parameters. For example, it sets the initial memory size
-and maximum size to be 17 pages, where each page consists of 64kB. Use the `--verbose` flag to see the complete list of flags the build uses.
+and maximum size to be 2 pages, where each page consists of 64kB. Use the `--verbose` flag to see the complete list of flags the build uses.
 
 ## Run
 
