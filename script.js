@@ -11,7 +11,7 @@ var importObject = {
     },
 };
 
-WebAssembly.instantiateStreaming(fetch("zig-out/lib/checkerboard.wasm"), importObject).then((result) => {
+WebAssembly.instantiateStreaming(fetch("zig-out/bin/checkerboard.wasm"), importObject).then((result) => {
     const wasmMemoryArray = new Uint8Array(memory.buffer);
 
 
