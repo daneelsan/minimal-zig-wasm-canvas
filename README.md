@@ -36,7 +36,7 @@ The default (and only) target for this example is `wasm32-freestanding-musl`.
 The latest zig version used to build this project is:
 ```shell
 $ zig version
-0.12.0-dev.271+5cc1831ca
+0.12.0-dev.2341+92211135f
 ```
 
 To build the wasm module, run:
@@ -47,8 +47,8 @@ $ zig build
 $ ls zig-out/lib/ checkerboard.*
 checkerboard.wasm
 
-$ wc -c zig-out/lib/checkerboard.wasm 
-580 zig-out/lib/checkerboard.wasm
+$ wc -c zig-out/bin/checkerboard.wasm 
+580 zig-out/bin/checkerboard.wasm
 ```
 
 Note: `build.zig` specifies various wasm-ld parameters. For example, it sets the initial memory size
